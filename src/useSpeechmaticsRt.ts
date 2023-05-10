@@ -1,5 +1,5 @@
+import { Realtime } from "@speechmatics/js-sdk/browser";
 import { useEffect, useState } from "react";
-
 export type UseSpeechmaticsRtParams = {
   setIsConnected?: (val: boolean) => void;
   setTranscript?: (val: string | ((val: string) => string)) => void;
@@ -62,17 +62,20 @@ async function initialiseSM(
     setIsConnected?.(false);
   });
 
-  session.addListener("AddTranscript", (result: any) => {
+  session.addListener("AddTranscript", (result: Realtime.AddTranscript) => {
     console.log("AddTranscript", JSON.stringify(result, null, 2));
     setTranscript?.(
       (transcript) => transcript + " " + result.metadata.transcript
     );
   });
 
-  session.addListener("AddPartialTranscript", (result: any) => {
-    console.log("AddPartialTranscript", JSON.stringify(result, null, 2));
-    setPartialTranscript?.(result.metadata.transcript + " ");
-  });
+  session.addListener(
+    "AddPartialTranscript",
+    (result: Realtime.AddPartialTranscript) => {
+      console.log("AddPartialTranscript", JSON.stringify(result, null, 2));
+      setPartialTranscript?.(result.metadata.transcript + " ");
+    }
+  );
 
   const sessionStart = async () => {
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
