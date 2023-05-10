@@ -51,9 +51,7 @@ async function initialiseSM(
   let session = sm.realtime.create(smJwt);
 
   let stream: MediaStream | null = null;
-  let audioContext: AudioContext | null = null;
-  let processor: ScriptProcessorNode | null = null;
-  let source: MediaStreamAudioSourceNode | null = null;
+  let recorder: MediaRecorder | null = null;
 
   session.addListener("RecognitionStarted", () => {
     console.log("RecognitionStarted");
@@ -79,7 +77,7 @@ async function initialiseSM(
   const sessionStart = async () => {
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    const mediaRecorder = new MediaRecorder(stream, {
+    recorder = new MediaRecorder(stream, {
       mimeType: "audio/webm;codecs=opus",
       audioBitsPerSecond: 16000,
     });
@@ -87,9 +85,11 @@ async function initialiseSM(
     session
       ?.start({ language: "en" }, { type: "file" })
       .then(() => {
-        mediaRecorder.start(1000);
+        if (!recorder) return Promise.reject("recorder not initialised");
 
-        mediaRecorder.ondataavailable = async (event) => {
+        recorder.start(1000);
+
+        recorder.ondataavailable = async (event) => {
           if (event.data.size > 0 && session?.isConnected()) {
             session?.sendAudio(Buffer.from(await event.data.arrayBuffer()));
           }
@@ -101,16 +101,12 @@ async function initialiseSM(
   };
 
   const sessionEnd = () => {
-    if (processor) {
-      processor.onaudioprocess = null;
-      processor.disconnect();
+    if (recorder) {
+      recorder.stop();
+      recorder = null;
     }
     stream?.getTracks().forEach((track) => track.stop());
     stream = null;
-    source?.disconnect();
-    source = null;
-    audioContext?.close();
-    audioContext = null;
     session?.stop();
   };
 
