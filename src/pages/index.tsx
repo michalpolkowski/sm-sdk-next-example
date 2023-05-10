@@ -1,11 +1,19 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 
-const inter = Inter({ subsets: ['latin'] })
+import useSpeechmaticsRt from '@/useSpeechmaticsRt'
 
 export default function Home() {
+
+  const {
+    isConnected,
+    sessionEnd,
+    sessionStart,
+    partialTranscript,
+    transcript,
+  } = useSpeechmaticsRt({ jwt: smJwt });
+
+
   return (
     <>
       <Head>
@@ -14,101 +22,17 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${styles.main} ${inter.className}`}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>src/pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+      <main className={`${styles.main}`}>
+        {isConnected ? <div>Connected</div> : <div>Not Connected</div>}
+        <button onClick={() => sessionStart?.()}>Start</button>
+        <button onClick={() => sessionEnd?.()}>Stop</button>
+        <div className="card">{transcript}</div>
+        <div className="card">{partialTranscript}</div>
       </main>
     </>
   )
 }
+
+
+const smJwt =
+  "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzbWlzc3VlciIsImV4cCI6MTY4MzIyNjcyNCwibmJmIjoxNjgzMjE5NTI0LCJpYXQiOjE2ODMyMjMxMjQsImNvbnRyYWN0X2lkIjoiMTUiLCJwcm9kdWN0IjoicnQiLCJ1c2VyX2lkIjoic2VsZnNlcnZpY2UtMTQiLCJjb25uZWN0aW9uX3F1b3RhIjoiMiJ9.Yh6dp7qxLs__UGHXU-W0UPUeW1BLiLmm_c0CALX3CfNLzvDuGpxzvPVtaAPX7qDIYe1-rMzkg3QodDv2vEFyWNL_p7mgi2-kFfHY17A3DcoabuhKyt6hdYAo3b0AKnY52BBsbi-08T8BX140kMkZApo7xvqGMmIX-kalL-iq31HHTs313p6HVTHJZuvCu9sambh9w9tGIkOxv_tlBVy5NLyncC1PHhEdPfjbrRyG48404g_h0oR0Fo2fXw9rnmziU5cdl3rh5US-YhAl2geYB44eXvrXpJp5A7r-BVWIKoCUT0maBwmtaENN55f8YYtvYUNg5DMvGkWKKvpZ-pHuNy-Qnpm7uIfayLNGifqYR2FPMnV9PNHJNYCWn6fKWUjGOAh3sqpHEGz44bl2TObKwN8H7kfLISRs3Hg8AfO-81LPUzK1szVYd8aj1ku7I8-eAZAptXoo6qBD_COxj6StvxZ9ne4ZTZFVwXyMUjPFvRFvt4DDThPLXaUFduu6DV3_";
