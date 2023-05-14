@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
 
-import useSpeechmaticsRt from '@/useSpeechmaticsRt'
+import useSpeechmaticsRt from '@/useSpeechmaticsRt_useclient'
 
 export default function Home() {
 

@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@speechmatics/js-sdk": "github:speechmatics/speechmatics-js#rollback-attempting-fix-default-module",
+    "@deepgram/sdk": "^1.21.0",
+    "@speechmatics/js-sdk": "github:speechmatics/speechmatics-js#next-js-compatibility-experiments",
     "@types/node": "18.16.3",
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.1",
@@ -20,8 +21,5 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.0.4"
-  },
-  "devDependencies": {
-    "babel-plugin-transform-import-meta": "^2.2.0"
   }
 }
