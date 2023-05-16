@@ -1,4 +1,3 @@
-"use client";
 import { Speechmatics } from "@speechmatics/js-sdk/browser";
 import { useEffect, useState } from "react";
 
