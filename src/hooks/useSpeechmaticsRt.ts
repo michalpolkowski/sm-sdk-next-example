@@ -73,6 +73,8 @@ async function initialiseSM(
     setPartialTranscript?.(result.metadata.transcript + " ");
   });
 
+  session.addListener("Error", (error: any) => {});
+
   const sessionStart = async () => {
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
